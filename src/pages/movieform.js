@@ -1,25 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-function MovieForm() {
-  const [title, setTitle] = useState('');
-  const [selectedGenre, setSelectedGenre] = useState('all');
-  const [voteAverage, setVoteAverage] = useState(0);
+const MovieForm = ({ onSearch }) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [genre, setGenre] = useState("all");
 
-  const handleTitleChange = (event) => {
-    setTitle(event.target.value);
+  const handleSearchInputChange = (event) => {
+    setSearchTerm(event.target.value);
   };
 
-  const handleGenreChange = (event) => {
-    setSelectedGenre(event.target.value);
-  };
-
-  const handleVoteAverageChange = (event) => {
-    setVoteAverage(event.target.value);
+  const handleGenreSelectChange = (event) => {
+    setGenre(event.target.value);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // handle form submission logic here
+    let url = `https://api.themoviedb.org/3/discover/movie?api_key=04c35731a5ee918f014970082a0088b1`;
+
+    if (genre !== "all") {
+      url += `&with_genres=${genre}`;
+    }
+
+    if (searchTerm !== "") {
+      url += `&query=${filterByTitle(searchTerm)}`;
+    }
+
+    onSearch(url);
+  };
+
+  const filterByTitle = (title) => {
+    return title
+      .toLowerCase()
+      .split(" ")
+      .join("+");
   };
 
   return (
